@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:id="@+id/urltxt"
+        android:layout_alignParentLeft="true" />
+    <Button
+        style="?android:buttonBarButtonStyle"
+        android:id="@+id/Goto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go"
+        android:layout_alignParentRight="true"
+        android:onClick="loadWebView"/>
+</LinearLayout>
