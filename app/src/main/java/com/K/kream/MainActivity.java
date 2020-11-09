@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -16,7 +17,6 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar spinner;
     private  WebView web;
+    private  EditText urlTxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +32,14 @@ public class MainActivity extends AppCompatActivity {
         web = (WebView) findViewById(R.id.web);
         web.setWebViewClient(new Browser());
         web.setWebChromeClient(new MyWebClient());
+        String newUA= "Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36";
+        web.getSettings().setUserAgentString(newUA);
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setSupportZoom(true);
         web.getSettings().setBuiltInZoomControls(true);
         spinner = (ProgressBar)findViewById(R.id.progress);
         spinner.setVisibility(View.INVISIBLE);
+        urlTxt = (EditText)findViewById(R.id.urltxt);
     }
 
     public void loadWebView(View view)
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
             openDialog("Invalid URL. Please correct the URL");
             return;
         }
+        spinner.setVisibility(View.VISIBLE);
         web.loadUrl(urltxt);
     }
 
@@ -74,15 +79,10 @@ public class MainActivity extends AppCompatActivity {
     {
         Browser() {}
 
-        public boolean shouldOverrideUrlLoading(WebView paramWebView, String paramString)
-        {
-            paramWebView.loadUrl(paramString);
-            return true;
-        }
-
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            urlTxt.setText(url);
             spinner.setVisibility(View.VISIBLE);
         }
 
@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
+            if(error.getDescription().toString().equals("net::ERR_FAILED")) return;
             openDialog(error.getDescription().toString());
         }
     }
@@ -140,6 +141,18 @@ public class MainActivity extends AppCompatActivity {
             this.mCustomViewCallback = paramCustomViewCallback;
             ((FrameLayout)MainActivity.this.getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
             MainActivity.this.getWindow().getDecorView().setSystemUiVisibility(3846);
+        }
+
+        @Override
+        public void onPermissionRequest(PermissionRequest request) {
+            String[] resources = request.getResources();
+            for (int i = 0; i < resources.length; i++) {
+                if (PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID.equals(resources[i])) {
+                    request.grant(resources);
+                    return;
+                }
+            }
+            super.onPermissionRequest(request);
         }
     }
 }

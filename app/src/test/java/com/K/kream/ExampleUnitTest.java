@@ -1,4 +1,4 @@
-package com.K.kream;
+package com.k.kream;
 
 import org.junit.Test;
 

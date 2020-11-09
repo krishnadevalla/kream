@@ -1,4 +1,4 @@
-package com.K.kream;
+package com.k.kream;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.K.kream", appContext.getPackageName());
+        assertEquals("com.k.kream", appContext.getPackageName());
     }
 }
